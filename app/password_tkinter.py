@@ -31,9 +31,12 @@ def pass_tkinter():
             CTkMessagebox(title=f"ошибка: {e}", message='должен быть хотя бы один из: цифр, букв, знаков')
 
     def copy_to_clipboard():
-        myEntry.clipboard_clear()
-        myEntry.clipboard_append(myEntry.get())
-        CTkMessagebox(title="Скопировано", message=f"Пароль: {myEntry.get()}\nскопирован в буфер обмена")
+        if myEntry.get():
+            myEntry.clipboard_clear()
+            myEntry.clipboard_append(myEntry.get())
+            CTkMessagebox(title="Скопировано", message=f"Пароль: {myEntry.get()}\nскопирован в буфер обмена")
+        else:
+            CTkMessagebox(title="Ошибка", message="Генерируйте пароль")
 
     myLabel = ctk.CTkLabel(root, text="Генератор паролей", font=("Arial", 20))
     myLabel.grid(row=0, column=0, pady=5, columnspan=3)
