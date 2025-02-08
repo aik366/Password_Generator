@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import string
+from string import digits, ascii_letters, punctuation
 import random
 from CTkMessagebox import CTkMessagebox
 
@@ -15,20 +15,20 @@ def pass_tkinter():
     root.grid_columnconfigure((0, 1, 2), weight=1, uniform='a')
     root.grid_rowconfigure((0, 1, 2), weight=1, uniform='a')
 
-    def password(chars, number=1, letter=1, symbol=1):
-        if not number and not letter and not symbol:
-            return CTkMessagebox(title="ошибка", message='должен быть хотя бы один из: цифр, букв, знаков')
-        number = string.digits if number else ''
-        letter = string.ascii_letters if letter else ''
-        symbol = string.punctuation if symbol else ''
-        s = number + letter + symbol
-        return ''.join(random.choices(s, k=chars))
-
-    def generate():
-        gen_password = password(int(slider.get()), numbers_value.get(), letters_value.get(), symbols_value.get())
-        if isinstance(gen_password, str):
+    def generate_password():
+        try:
+            gen_password = ""
+            if numbers_value.get():
+                gen_password += digits
+            if letters_value.get():
+                gen_password += ascii_letters
+            if symbols_value.get():
+                gen_password += punctuation
+            gen_password = ''.join(random.choices(gen_password, k=int(slider.get())))
             myEntry.delete(0, 'end')
             myEntry.insert(0, gen_password)
+        except Exception as e:
+            CTkMessagebox(title=f"ошибка: {e}", message='должен быть хотя бы один из: цифр, букв, знаков')
 
     def copy_to_clipboard():
         myEntry.clipboard_clear()
@@ -56,7 +56,7 @@ def pass_tkinter():
                                       font=("Arial", 14))
     symbolsCheckBox.grid(row=2, column=2, padx=(20, 10), pady=5, sticky="we")
 
-    run_button = ctk.CTkButton(root, text="Генерировать", command=generate, height=35, font=("Arial", 14))
+    run_button = ctk.CTkButton(root, text="Генерировать", command=generate_password, height=35, font=("Arial", 14))
     run_button.grid(row=4, column=0, padx=(10, 5), pady=5, sticky="we", columnspan=2)
 
     copy_button = ctk.CTkButton(root, text="Copy", command=copy_to_clipboard, height=35, font=("Arial", 14))
